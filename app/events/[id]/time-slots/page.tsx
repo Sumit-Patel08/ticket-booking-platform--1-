@@ -1,28 +1,21 @@
 import { createClient } from "@/lib/supabase/server"
 import { Header } from "@/components/layout/header"
-import { BookingFlow } from "@/components/booking/booking-flow"
-import { redirect, notFound } from "next/navigation"
+import { TimeSlotAvailability } from "@/components/events/time-slot-availability"
+import { notFound } from "next/navigation"
 
-export default async function BookEventPage({
+export default async function TimeSlotPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ category?: string; quantity?: string; slot?: string }>
 }) {
   const { id } = await params
-  const { category, quantity, slot } = await searchParams
-
   const supabase = await createClient()
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect("/auth/login")
-  }
-
-  // Fetch event details with seat categories
+  // Fetch event details with related data
   const { data: event, error } = await supabase
     .from("events")
     .select(`
@@ -33,7 +26,10 @@ export default async function BookEventPage({
         address,
         city,
         state,
-        country
+        country,
+        capacity,
+        description,
+        amenities
       ),
       seat_categories (
         id,
@@ -52,21 +48,12 @@ export default async function BookEventPage({
     notFound()
   }
 
-  // Get user profile
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
   return (
     <div className="min-h-screen bg-background">
       <Header user={user} />
+
       <main className="container mx-auto px-4 py-8">
-        <BookingFlow
-          event={event}
-          user={user}
-          profile={profile}
-          initialCategory={category}
-          initialQuantity={quantity ? Number.parseInt(quantity) : 1}
-          selectedSlot={slot}
-        />
+        <TimeSlotAvailability event={event} user={user} />
       </main>
     </div>
   )

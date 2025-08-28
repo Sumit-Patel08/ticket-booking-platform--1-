@@ -6,42 +6,29 @@ import Image from "next/image"
 
 const featuredEvents = [
   {
-    id: 1,
-    title: "Summer Music Festival 2024",
-    description: "Join us for an unforgettable weekend of music featuring top artists from around the world.",
-    image: "/music-festival-stage-with-crowd.png",
-    date: "July 15-17, 2024",
-    location: "Central Park, New York",
-    price: "From $89",
+    id: "660e8400-e29b-41d4-a716-446655440001",
+    title: "Aditya Ghadvi Live Concert in Ahmedabad",
+    description: "Experience the soulful voice of Aditya Ghadvi live in concert. Join us for an evening of Gujarati folk music, devotional songs, and contemporary hits.",
+    image: "/jazz-club-with-dim-lighting-and-musicians.jpg",
+    date: "September 15, 2024",
+    location: "Sardar Patel Stadium, Ahmedabad",
+    price: "From ₹999",
     category: "Music",
-    rating: 4.8,
-    attendees: "15K+",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Tech Innovation Conference",
-    description: "Discover the latest trends in technology and network with industry leaders.",
-    image: "/modern-conference-hall-with-tech-presentation.png",
-    date: "August 22, 2024",
-    location: "Convention Center, San Francisco",
-    price: "From $299",
-    category: "Technology",
     rating: 4.9,
-    attendees: "2K+",
+    attendees: "48K+",
     featured: true,
   },
   {
-    id: 3,
-    title: "Broadway Musical Night",
-    description: "Experience the magic of Broadway with this spectacular musical performance.",
-    image: "/broadway-theater-stage-with-dramatic-lighting.png",
-    date: "September 5, 2024",
-    location: "Broadway Theater, New York",
-    price: "From $125",
-    category: "Theater",
-    rating: 4.7,
-    attendees: "800+",
+    id: "660e8400-e29b-41d4-a716-446655440002",
+    title: "Akash Gupta Standup Comedy in Mumbai",
+    description: "Get ready to laugh until your stomach hurts! Akash Gupta brings his hilarious standup comedy show to Mumbai.",
+    image: "/comedy-club-stage-with-microphone-and-spotlight.png",
+    date: "September 22, 2024",
+    location: "NSCI Dome, Mumbai",
+    price: "From ₹799",
+    category: "Comedy",
+    rating: 4.8,
+    attendees: "5.8K+",
     featured: true,
   },
 ]
@@ -105,7 +92,9 @@ export function FeaturedEvents() {
               </CardContent>
 
               <CardFooter>
-                <Button className="w-full">Book Now</Button>
+                <Button className="w-full" asChild>
+                  <a href={`/events/${event.id}`}>Book Now</a>
+                </Button>
               </CardFooter>
             </Card>
           ))}

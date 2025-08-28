@@ -35,6 +35,37 @@ export function EventBookingCard({ event, user }: EventBookingCardProps) {
   const [quantity, setQuantity] = useState<number>(1)
   const [isFavorited, setIsFavorited] = useState(false)
 
+  const addToCart = () => {
+    if (!selectedCategory) return
+    
+    const selectedCategoryData = event.seat_categories.find((cat) => cat.id === selectedCategory)
+    if (!selectedCategoryData) return
+
+    const cartItem = {
+      id: `${event.id}-${selectedCategory}-${Date.now()}`,
+      eventId: event.id,
+      eventTitle: event.title,
+      eventDate: new Date(event.start_date).toLocaleDateString(),
+      eventVenue: `${event.venues.name}, ${event.venues.city}`,
+      ticketType: selectedCategoryData.name,
+      price: selectedCategoryData.price,
+      quantity: quantity,
+      eventImage: "/jazz-club-with-dim-lighting-and-musicians.jpg"
+    }
+
+    // Get existing cart items
+    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]")
+    
+    // Add new item to cart
+    const updatedCart = [...existingCart, cartItem]
+    
+    // Save to localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart))
+    
+    // Show success message (you could add a toast here)
+    alert(`Added ${quantity} ${selectedCategoryData.name} ticket(s) to cart!`)
+  }
+
   const startDate = new Date(event.start_date)
   const selectedCategoryData = event.seat_categories.find((cat) => cat.id === selectedCategory)
   const totalPrice = selectedCategoryData ? selectedCategoryData.price * quantity : 0
@@ -126,35 +157,45 @@ export function EventBookingCard({ event, user }: EventBookingCardProps) {
             <div className="border-t pt-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm">Subtotal ({quantity} tickets)</span>
-                <span className="font-semibold">${totalPrice.toFixed(2)}</span>
+                <span className="font-semibold">₹{totalPrice.toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>Service fees</span>
-                <span>${(totalPrice * 0.1).toFixed(2)}</span>
+                <span>₹{(totalPrice * 0.1).toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between font-bold text-lg mt-2 pt-2 border-t">
                 <span>Total</span>
-                <span>${(totalPrice * 1.1).toFixed(2)}</span>
+                <span>₹{(totalPrice * 1.1).toFixed(2)}</span>
               </div>
             </div>
           )}
 
           {/* Booking Button */}
           <div className="space-y-2">
-            {user ? (
-              <Button className="w-full" size="lg" disabled={!selectedCategory || event.available_seats === 0} asChild>
-                <Link href={`/events/${event.id}/book?category=${selectedCategory}&quantity=${quantity}`}>
-                  {event.available_seats === 0 ? "Sold Out" : "Book Now"}
-                </Link>
-              </Button>
+            {selectedCategory ? (
+              <>
+                <Button 
+                  className="w-full" 
+                  size="lg" 
+                  disabled={event.available_seats === 0}
+                  onClick={() => addToCart()}
+                >
+                  {event.available_seats === 0 ? "Sold Out" : "Add to Cart"}
+                </Button>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href={`/events/${event.id}/time-slots`}>
+                    Select Time Slot
+                  </Link>
+                </Button>
+              </>
             ) : (
-              <Button className="w-full" size="lg" asChild>
-                <Link href="/auth/login">Sign In to Book</Link>
+              <Button className="w-full" size="lg" disabled>
+                Select Ticket Type First
               </Button>
             )}
 
-            <Button variant="outline" className="w-full bg-transparent">
-              Add to Wishlist
+            <Button variant="outline" className="w-full bg-transparent" asChild>
+              <Link href="/cart">View Cart</Link>
             </Button>
           </div>
 

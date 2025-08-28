@@ -37,9 +37,10 @@ interface BookingFlowProps {
   profile: any
   initialCategory?: string
   initialQuantity?: number
+  selectedSlot?: string
 }
 
-export function BookingFlow({ event, user, profile, initialCategory, initialQuantity = 1 }: BookingFlowProps) {
+export function BookingFlow({ event, user, profile, initialCategory, initialQuantity = 1, selectedSlot }: BookingFlowProps) {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [bookingData, setBookingData] = useState({
